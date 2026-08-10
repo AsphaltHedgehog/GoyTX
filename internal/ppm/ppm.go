@@ -24,13 +24,9 @@ func NewWriter(out io.Writer, width, height int) (*Writer, error) {
 }
 
 func (w *Writer) WritePixels(c vec.Color) error {
-	r := c.X
-	g := c.Y
-	b := c.Z
-
-	rbyte := int(255.999 * r)
-	gbyte := int(255.999 * g)
-	bbyte := int(255.999 * b)
+	rbyte := int(255.999 * c.X)
+	gbyte := int(255.999 * c.Y)
+	bbyte := int(255.999 * c.Z)
 
 	_, err := fmt.Fprintf(w.w, "%d %d %d\n", rbyte, gbyte, bbyte)
 

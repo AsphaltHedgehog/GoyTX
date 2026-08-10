@@ -1,30 +1,55 @@
 package main
 
 import (
-	"bufio"
 	"fmt"
+	"goytx/m/internal/ppm"
+	"goytx/m/internal/vec"
+	"io"
 	"os"
 )
+
+type Options struct {
+	Seed     uint64
+	Progress io.Writer
+}
 
 func main() {
 	const imgWidth = 256
 	const imgHeight = 256
 
-	w := bufio.NewWriter(os.Stdout)
-	defer w.Flush()
-	fmt.Fprintf(w, "P3\n%d %d\n255\n", imgWidth, imgHeight)
+	pw, err := ppm.NewWriter(os.Stdout, imgWidth, imgHeight)
+	if err != nil {
+		panic(err)
+	}
+	defer pw.Close()
 
-	for j := 0; j < imgWidth; j++ {
-		for i := 0; i < imgHeight; i++ {
-			r := float64(i) / float64(imgWidth-1)
-			g := float64(j) / float64(imgHeight-1)
-			b := 0.0
+	opts := Options{
+		Seed:     0,
+		Progress: os.Stderr,
+	}
 
-			ir := int(255.999 * r)
-			ig := int(255.999 * g)
-			ib := int(255.999 * b)
+	for j := range imgHeight {
+		fmt.Fprintf(opts.Progress, "\rScanlines remaining: %d ", imgHeight-j)
+		for i := range imgWidth {
+			pixelColor := vec.Color{
+				float64(i) / float64(imgWidth-1),
+				float64(j) / float64(imgHeight-1),
+				0.0,
+			}
 
-			fmt.Fprintf(w, "%d %d %d\n", ir, ig, ib)
+			err := pw.WritePixels(pixelColor)
+
+			if err != nil {
+				panic(err)
+			}
+
 		}
 	}
+
+	if err := pw.Close(); err != nil {
+		fmt.Fprintln(os.Stderr, "error:", err)
+		os.Exit(1)
+	}
+
+	fmt.Fprint(os.Stderr, "\rDone.                 \n")
 }

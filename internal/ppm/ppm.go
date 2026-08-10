@@ -15,7 +15,12 @@ type Writer struct {
 }
 
 func NewWriter(out io.Writer, width, height int) (*Writer, error) {
-	return &Writer{w: bufio.NewWriter(out), width: width, height: height}, nil
+	bw := bufio.NewWriter(out)
+	if _, err := fmt.Fprintf(bw, "P3\n%d %d\n255\n", width, height); err != nil {
+		return nil, err
+	}
+
+	return &Writer{w: bw, width: width, height: height}, nil
 }
 
 func (w *Writer) WritePixels(c vec.Color) error {
@@ -33,6 +38,7 @@ func (w *Writer) WritePixels(c vec.Color) error {
 		return err
 	}
 
+	w.written++
 	return nil
 }
 

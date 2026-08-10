@@ -27,6 +27,9 @@ go.work.sum
 # env file
 .env
 
+# images formats
+*.ppm
+
 # Editor/IDE
-# .idea/
+.idea/
 # .vscode/

@@ -39,8 +39,13 @@ func (w *Writer) WritePixels(c vec.Color) error {
 }
 
 func (w *Writer) Close() error {
+	if err := w.w.Flush(); err != nil {
+		return err
+	}
+
 	if w.written != w.width*w.height {
 		return fmt.Errorf("ppm: wrote %d pixels, header declares %d", w.written, w.width*w.height)
 	}
-	return w.w.Flush()
+
+	return nil
 }

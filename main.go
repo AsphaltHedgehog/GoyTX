@@ -16,34 +16,76 @@ type Options struct {
 }
 
 func rayColor(r geom.Ray) vec.Color {
-	return vec.Color{}
+	unitDirection := r.Dir.Unit()
+	a := 0.5 * (unitDirection.Y + 1.0)
+
+	white := vec.Color{X: 1.0, Y: 1.0, Z: 1.0}
+	blue := vec.Color{X: 0.5, Y: 0.7, Z: 1.0}
+
+	return white.Scale(1.0 - a).Add(blue.Scale(a))
 }
 
 func main() {
-	const imgWidth = 256
-	const imgHeight = 256
+	// Image parameters setup
+	aspectRatio := 16.0 / 10.0
+	imgWidth := 400
+	imgHeight := int(float64(imgWidth) / aspectRatio)
+
+	if imgHeight < 1 {
+		imgHeight = 1
+	}
+
+	// Camera and Viewport init
+	focalLength := 1.0
+	viewportHeight := 2.0
+	viewportWidth := viewportHeight * (float64(imgWidth) / float64(imgHeight))
+	cameraCenter := vec.Point3{}
+
+	// Calculate the vectors across the horizontal and down the vertical viewport edges.
+	viewportU := vec.Vec3{X: viewportWidth}
+	viewportV := vec.Vec3{Y: -viewportHeight}
+
+	// Calculate the horizontal and vertical delta vectors from pixel to pixel.
+	pixelDeltaU := viewportU.Div(float64(imgWidth))
+	pixelDeltaV := viewportV.Div(float64(imgHeight))
+
+	// Calculate the location of the upper left pixel.
+	focal := vec.Vec3{Z: focalLength}
+	halfU := viewportU.Div(2)
+	halfV := viewportV.Div(2)
+	viewPortUpperLeft := cameraCenter.
+		Sub(focal).
+		Sub(halfU).
+		Sub(halfV)
+
+	halfPixelDeltaSum := pixelDeltaU.Add(pixelDeltaV).Scale(0.5)
+	pixel00Loc := viewPortUpperLeft.Add(halfPixelDeltaSum)
 
 	pw, err := ppm.NewWriter(os.Stdout, imgWidth, imgHeight)
 	if err != nil {
 		panic(err)
 	}
-	defer pw.Close()
 
 	opts := Options{
 		Seed:     0,
 		Progress: os.Stderr,
 	}
 
+	// Render
+
 	for j := range imgHeight {
 		fmt.Fprintf(opts.Progress, "\rScanlines remaining: %d ", imgHeight-j)
 		for i := range imgWidth {
-			pixelColor := vec.Color{
-				float64(i) / float64(imgWidth-1),
-				float64(j) / float64(imgHeight-1),
-				0.0,
-			}
+			pixelDeltaUI := pixelDeltaU.Scale(float64(i))
+			pixelDeltaVJ := pixelDeltaV.Scale(float64(j))
+			pixelCenter := pixel00Loc.Add(pixelDeltaUI).Add(pixelDeltaVJ)
 
-			err := pw.WritePixels(pixelColor)
+			rayDirection := pixelCenter.Sub(cameraCenter)
+			r := geom.Ray{Orig: cameraCenter, Dir: rayDirection}
+
+			pixelColor := rayColor(r)
+
+			err := pw.WritePixel(pixelColor)
 
 			if err != nil {
 				panic(err)

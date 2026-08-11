@@ -2,10 +2,12 @@ package main
 
 import (
 	"fmt"
-	"goytx/m/internal/ppm"
-	"goytx/m/internal/vec"
 	"io"
 	"os"
+
+	"github.com/AsphaltHedgehog/GoyTX/internal/geom"
+	"github.com/AsphaltHedgehog/GoyTX/internal/ppm"
+	"github.com/AsphaltHedgehog/GoyTX/internal/vec"
 )
 
 type Options struct {

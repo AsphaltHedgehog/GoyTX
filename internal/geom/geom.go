@@ -1,6 +1,6 @@
 package ray
 
-import "goytx/m/internal/vec"
+import "github.com/AsphaltHedgehog/GoyTX/internal/vec"
 
 type Ray struct {
 	Orig vec.Point3

@@ -3,8 +3,9 @@ package ppm
 import (
 	"bufio"
 	"fmt"
-	"goytx/m/internal/vec"
 	"io"
+
+	"github.com/AsphaltHedgehog/GoyTX/internal/vec"
 )
 
 type Writer struct {

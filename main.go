@@ -15,6 +15,10 @@ type Options struct {
 	Progress io.Writer
 }
 
+func rayColor(r geom.Ray) vec.Color {
+	return vec.Color{}
+}
+
 func main() {
 	const imgWidth = 256
 	const imgHeight = 256

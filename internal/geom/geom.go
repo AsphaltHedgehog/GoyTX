@@ -1,4 +1,4 @@
-package ray
+package geom
 
 import "github.com/AsphaltHedgehog/GoyTX/internal/vec"
 

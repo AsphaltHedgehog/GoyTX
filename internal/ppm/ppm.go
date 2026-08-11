@@ -24,7 +24,7 @@ func NewWriter(out io.Writer, width, height int) (*Writer, error) {
 	return &Writer{w: bw, width: width, height: height}, nil
 }
 
-func (w *Writer) WritePixels(c vec.Color) error {
+func (w *Writer) WritePixel(c vec.Color) error {
 	rbyte := int(255.999 * c.X)
 	gbyte := int(255.999 * c.Y)
 	bbyte := int(255.999 * c.Z)

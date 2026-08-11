@@ -1,5 +1,7 @@
 package vec
 
+import "math"
+
 type Vec3 struct {
 	X, Y, Z float64
 }
@@ -32,7 +34,7 @@ func (v Vec3) Dot(u Vec3) float64 {
 }
 
 func (v Vec3) Length() float64 {
-	return v.LengthSquared()
+	return math.Sqrt(v.LengthSquared())
 }
 
 func (v Vec3) LengthSquared() float64 {

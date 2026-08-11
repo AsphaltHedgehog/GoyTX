@@ -46,5 +46,5 @@ func (v Vec3) Unit() Vec3 {
 }
 
 func (v Vec3) Cross(u Vec3) Vec3 {
-	return Vec3{(u.Y*v.Z - u.Z*v.Y), (u.Z*v.X - u.X*v.Z), (u.X*v.Y - u.Y*v.X)}
+	return Vec3{v.Y*u.Z - v.Z*u.Y, v.Z*u.X - v.X*u.Z, v.X*u.Y - v.Y*u.X}
 }

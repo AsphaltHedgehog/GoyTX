@@ -29,6 +29,10 @@ func (v Vec3) Scale(t float64) Vec3 {
 	return Vec3{v.X * t, v.Y * t, v.Z * t}
 }
 
+func (v Vec3) Neg() Vec3 {
+	return Vec3{-v.X, -v.Y, -v.Z}
+}
+
 func (v Vec3) Dot(u Vec3) float64 {
 	return v.X*u.X + v.Y*u.Y + v.Z*u.Z
 }

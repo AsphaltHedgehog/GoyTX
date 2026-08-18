@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"io"
+	"math"
 	"os"
 
 	"github.com/AsphaltHedgehog/GoyTX/internal/geom"
@@ -35,6 +36,12 @@ func main() {
 	if imgHeight < 1 {
 		imgHeight = 1
 	}
+
+	// World setup
+	world := geom.HittableList{}
+
+	world.Add(geom.Sphere{Center: vec.Point3{Z: -1}, Radius: 0.5})
+	world.Add(geom.Sphere{Center: vec.Point3{Y: -100.5, Z: -1}, Radius: 100})
 
 	// Camera and Viewport init
 	focalLength := 1.0

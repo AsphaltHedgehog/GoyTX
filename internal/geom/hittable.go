@@ -2,11 +2,25 @@ package geom
 
 import "github.com/AsphaltHedgehog/GoyTX/internal/vec"
 
-type HitList struct {
+type HitRecord struct {
 	P      vec.Point3
 	Normal vec.Vec3
-	t      float64
+	T      float64
+
+	FrontFace bool
 }
+
 type Hittable interface {
-	hit(r Ray, rayTMin float64, rayTMax float64, hitRecord HitList) bool
+	Hit(r Ray, tMin, tMax float64) (HitRecord, bool)
+}
+
+func (h HitRecord) setFaceNormal(r Ray, outwardNormal vec.Vec3) {
+	// Outward normal is assumed to have unit length.
+
+	h.FrontFace = r.Dir.Dot(outwardNormal) < 0
+	if h.FrontFace {
+		h.Normal = outwardNormal
+	} else {
+		h.Normal = outwardNormal.Neg()
+	}
 }

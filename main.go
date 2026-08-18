@@ -15,14 +15,15 @@ type Options struct {
 	Progress io.Writer
 }
 
-func rayColor(r geom.Ray) vec.Color {
-	unitDirection := r.Dir.Unit()
-	a := 0.5 * (unitDirection.Y + 1.0)
+func rayColor(r geom.Ray, world geom.Hittable) vec.Color {
+	if rec, ok := world.Hit(r, 0, math.Inf(1)); ok {
+		return rec.Normal.Add(vec.Color{X: 1, Y: 1, Z: 1}).Scale(0.5)
+	}
 
-	white := vec.Color{X: 1.0, Y: 1.0, Z: 1.0}
-	blue := vec.Color{X: 0.5, Y: 0.7, Z: 1.0}
+	unitDir := r.Dir.Unit()
+	a := 0.5 * (unitDir.Y + 1.0)
 
-	return white.Scale(1.0 - a).Add(blue.Scale(a))
+	return vec.Color{X: 1, Y: 1, Z: 1}.Scale(1.0 - a).Add(vec.Color{X: 0.5, Y: 0.7, Z: 1.0}.Scale(a))
 }
 
 func main() {
@@ -83,7 +84,7 @@ func main() {
 			rayDirection := pixelCenter.Sub(cameraCenter)
 			r := geom.Ray{Orig: cameraCenter, Dir: rayDirection}
 
-			pixelColor := rayColor(r)
+			pixelColor := rayColor(r, &world)
 
 			err := pw.WritePixel(pixelColor)
 

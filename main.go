@@ -17,7 +17,7 @@ type Options struct {
 }
 
 func rayColor(r geom.Ray, world geom.Hittable) vec.Color {
-	if rec, ok := world.Hit(r, 0, math.Inf(1)); ok {
+	if rec, ok := world.Hit(r, geom.Interval{Min: 0, Max: math.Inf(1)}); ok {
 		return rec.Normal.Add(vec.Color{X: 1, Y: 1, Z: 1}).Scale(0.5)
 	}
 

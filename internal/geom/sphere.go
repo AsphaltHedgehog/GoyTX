@@ -15,7 +15,7 @@ func New(center vec.Point3, radius float64) Sphere {
 	return Sphere{center, radius}
 }
 
-func (s Sphere) Hit(r Ray, tMin, tMax float64) (HitRecord, bool) {
+func (s Sphere) Hit(r Ray, rayT Interval) (HitRecord, bool) {
 	oc := s.Center.Sub(r.Orig)
 	a := r.Dir.LengthSquared()
 	h := r.Dir.Dot(oc)
@@ -29,9 +29,9 @@ func (s Sphere) Hit(r Ray, tMin, tMax float64) (HitRecord, bool) {
 	discSqrt := math.Sqrt(discriminant)
 
 	root := (h - discSqrt) / a
-	if root <= tMin || tMax <= root {
+	if !rayT.Surrounds(root) {
 		root = (h + discSqrt) / a
-		if root <= tMin || tMax <= root {
+		if !rayT.Surrounds(root) {
 			return HitRecord{}, false
 		}
 	}

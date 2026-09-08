@@ -11,7 +11,7 @@ type HitRecord struct {
 }
 
 type Hittable interface {
-	Hit(r Ray, tMin, tMax float64) (HitRecord, bool)
+	Hit(r Ray, rayT Interval) (HitRecord, bool)
 }
 
 func (h HitRecord) setFaceNormal(r Ray, outwardNormal vec.Vec3) {

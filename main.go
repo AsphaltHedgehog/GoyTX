@@ -31,11 +31,7 @@ func main() {
 	// Image parameters setup
 	aspectRatio := 16.0 / 10.0
 	imgWidth := 400
-	imgHeight := int(float64(imgWidth) / aspectRatio)
-
-	if imgHeight < 1 {
-		imgHeight = 1
-	}
+	imgHeight := max(int(float64(imgWidth)/aspectRatio), 1)
 
 	// World setup
 	world := geom.HittableList{}
